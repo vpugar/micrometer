@@ -39,6 +39,12 @@ public final class WebMvcTags {
 
     private static final Tag URI_REDIRECTION = Tag.of("uri", "REDIRECTION");
 
+    private static final Tag TOO_MANY_REQUESTS = Tag.of("uri", "TOO_MANY_REQUESTS");
+
+    private static final Tag UNAUTHORIZED = Tag.of("uri", "UNAUTHORIZED");
+
+    private static final Tag FORBIDDEN = Tag.of("uri", "FORBIDDEN");
+
     private WebMvcTags() {
     }
 
@@ -87,6 +93,15 @@ public final class WebMvcTags {
                 }
                 if (status != null && status.equals(HttpStatus.NOT_FOUND)) {
                     return URI_NOT_FOUND;
+                }
+                if (status != null && status.equals(HttpStatus.TOO_MANY_REQUESTS)) {
+                    return TOO_MANY_REQUESTS;
+                }
+                if (status != null && status.equals(HttpStatus.FORBIDDEN)) {
+                    return FORBIDDEN;
+                }
+                if (status != null && status.equals(HttpStatus.UNAUTHORIZED)) {
+                    return UNAUTHORIZED;
                 }
             }
             String pathInfo = getPathInfo(request);

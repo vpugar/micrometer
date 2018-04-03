@@ -46,6 +46,24 @@ public class WebMvcTagsTest {
     }
 
     @Test
+    public void unauthorizedRequestsAreShunted() {
+        response.setStatus(401);
+        assertThat(WebMvcTags.uri(request, response).getValue()).isEqualTo("UNAUTHORIZED");
+    }
+
+    @Test
+    public void forbiddenRequestsAreShunted() {
+        response.setStatus(403);
+        assertThat(WebMvcTags.uri(request, response).getValue()).isEqualTo("FORBIDDEN");
+    }
+
+    @Test
+    public void tooManyRequestsAreShunted() {
+        response.setStatus(429);
+        assertThat(WebMvcTags.uri(request, response).getValue()).isEqualTo("TOO_MANY_REQUESTS");
+    }
+
+    @Test
     public void notFoundsAreShunted() {
         response.setStatus(404);
         assertThat(WebMvcTags.uri(request, response).getValue()).isEqualTo("NOT_FOUND");
