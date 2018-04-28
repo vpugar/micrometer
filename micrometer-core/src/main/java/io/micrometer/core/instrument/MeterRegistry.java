@@ -27,6 +27,8 @@ import io.micrometer.core.instrument.search.RequiredSearch;
 import io.micrometer.core.instrument.search.Search;
 import io.micrometer.core.instrument.util.TimeUtils;
 import io.micrometer.core.lang.Nullable;
+import org.pcollections.HashTreePMap;
+import org.pcollections.PMap;
 
 import java.time.Duration;
 import java.util.*;
@@ -55,7 +57,7 @@ public abstract class MeterRegistry implements AutoCloseable {
     private final List<Consumer<Meter>> meterAddedListeners = new CopyOnWriteArrayList<>();
     private final Config config = new Config();
     private final More more = new More();
-    private volatile Map<Id, Meter> meterMap = Collections.emptyMap();
+    private volatile PMap<Id, Meter> meterMap = HashTreePMap.empty();
     private final AtomicBoolean closed = new AtomicBoolean(false);
     private PauseDetector pauseDetector = new ClockDriftPauseDetector(
             Duration.ofMillis(100),
@@ -571,10 +573,7 @@ public abstract class MeterRegistry implements AutoCloseable {
     }
 
     private void register(Id id, Meter meter) {
-        HashMap<Id, Meter> newMeterMap = new HashMap<>(meterMap);
-        newMeterMap.put(id, meter);
-
-        meterMap = Collections.unmodifiableMap(newMeterMap);
+        meterMap = meterMap.plus(id, meter);
     }
 
     private boolean accept(Meter.Id id) {
